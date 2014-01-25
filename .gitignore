@@ -6,3 +6,15 @@ test/dummy/db/*.sqlite3-journal
 test/dummy/log/*.log
 test/dummy/tmp/
 test/dummy/.sass-cache
+
+# yard generated
+doc
+.yardoc
+
+
+# For MacOS:
+#
+.DS_Store
+
+# Intellij IDEA project directory
+.idea/

@@ -7,13 +7,13 @@ require "rus_bank_rails/version"
 Gem::Specification.new do |s|
   s.name        = "rus_bank_rails"
   s.version     = RusBankRails::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of RusBankRails."
-  s.description = "TODO: Description of RusBankRails."
+  s.authors     = ["Alexsandrov Denis"]
+  s.email       = ["wilddalex@gmail.com"]
+  s.homepage    = "https://github.com/wildDAlex/rus_bank_rails"
+  s.summary     = "DB-версия гема rus_bank."
+  s.description = "Надстройка над гемом rus_bank, реализующая локальное хранилище."
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.0.2"
