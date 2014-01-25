@@ -11,12 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140125153450) do
+ActiveRecord::Schema.define(version: 20140125175122) do
 
   create_table "banks", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "reg_number"
+    t.integer  "bic"
+    t.string   "org_name"
+    t.string   "org_full_name"
+    t.string   "phones"
+    t.date     "date_kgr_registration"
+    t.string   "main_reg_number"
+    t.date     "main_date_reg"
+    t.string   "ustav_adr"
+    t.string   "fact_adr"
+    t.string   "director"
+    t.integer  "ust_money"
+    t.string   "org_status"
+    t.integer  "reg_code"
+    t.date     "ssv_date"
+    t.integer  "lic_lcode"
+    t.string   "lic_lt"
+    t.date     "lic_ldate"
+    t.integer  "internal_code"
   end
 
 end
