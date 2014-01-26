@@ -1,6 +1,8 @@
 class AddFieldsToBanks < ActiveRecord::Migration
   def change
-    add_column :banks, :bic, :int
+    add_column :banks, :reg_number, :int
+    add_column :banks, :internal_code, :int
+    add_column :banks, :bic, :string
     add_column :banks, :org_name, :string
     add_column :banks, :org_full_name, :string
     add_column :banks, :phones, :string
@@ -14,8 +16,8 @@ class AddFieldsToBanks < ActiveRecord::Migration
     add_column :banks, :org_status, :string
     add_column :banks, :reg_code, :integer
     add_column :banks, :ssv_date, :date
-    add_column :banks, :lic_lcode, :integer
-    add_column :banks, :lic_lt, :string
-    add_column :banks, :lic_ldate, :date
+    add_column :banks, :l_code, :integer
+    add_column :banks, :lt, :string
+    add_column :banks, :l_date, :date
   end
 end

@@ -15,31 +15,36 @@ module RusBankRails
       def BicToIntCode(bic)
         bank = self.class.find_by_bic(bic)
         if bank.nil?
-          info = get_info(bic)
-          new_bank(info).internal_code
+          new_bank(bic).internal_code
         else
-          if bank.updated_at < 1.day.ago
-            "старое"
+          if bank.updated_at < 1.minute.ago
+            update_bank(bank).internal_code
           else
             bank.internal_code
           end
         end
       end
 
-      def get_info(bic)
-        bank = RusBank.new
-        internal_code = bank.BicToIntCode(bic)
-        bank.CreditInfoByIntCode(internal_code).merge(internal_code: internal_code)
-      end
+      private
 
-      def new_bank(info)
-        bank = self.class.new
-        bank.reg_number = info[:co][:reg_number]
-        bank.bic = info[:co][:bic]
-        bank.internal_code = info[:internal_code]
-        bank.org_name = info[:co][:org_name]
+      def new_bank(bic)
+        bank = self.class.new(get_info(bic))
         bank.save
         return bank
+      end
+
+      def update_bank(bank)
+        bank.update(get_info(bank.bic))
+        return bank
+      end
+
+      def get_info(bic)
+        cbr = RusBank.new
+        internal_code = cbr.BicToIntCode(bic)
+        reg_number = cbr.BicToRegNumber(bic)
+        info = cbr.CreditInfoByIntCode(internal_code)
+        full_info = info[:co].merge(info[:lic]).merge(internal_code: internal_code, reg_number: reg_number)
+        full_info
       end
 
     end
