@@ -12,20 +12,40 @@ module RusBankRails
     end
 
     module LocalInstanceMethods
+      ##
+      # Метод возвращает внутренний номер банка по БИК
+
       def BicToIntCode(bic)
+        check_and_update(bic).internal_code
+      end
+
+      ##
+      # Метод возвращает регистрационный номер банка по БИК
+
+      def BicToRegNumber(bic)
+        check_and_update(bic).reg_number
+      end
+
+      private
+
+      ##
+      # Метод проверяет дату обновления записи в базе и пытается обновить в случае необходимости
+
+      def check_and_update(bic)
         bank = self.class.find_by_bic(bic)
         if bank.nil?
-          new_bank(bic).internal_code
+          new_bank(bic)
         else
           if bank.updated_at < 1.minute.ago
-            update_bank(bank).internal_code
+            update_bank(bank)
           else
-            bank.internal_code
+            bank
           end
         end
       end
 
-      private
+      ##
+      # Метод создает новый банк в базе
 
       def new_bank(bic)
         bank = self.class.new(get_info(bic))
@@ -33,10 +53,17 @@ module RusBankRails
         return bank
       end
 
+
+      ##
+      # Обновляет переданный экземпляр банка в базе
+
       def update_bank(bank)
         bank.update(get_info(bank.bic))
         return bank
       end
+
+      ##
+      # Метод возвращает актуальную информацию по банку с сайта ЦБР
 
       def get_info(bic)
         cbr = RusBank.new
