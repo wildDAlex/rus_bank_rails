@@ -82,7 +82,7 @@ module RusBankRails
           internal_code = cbr.BicToIntCode(bic)
           reg_number = cbr.BicToRegNumber(bic)
           info = cbr.CreditInfoByIntCode(internal_code)
-        rescue SocketError => e
+        rescue SocketError, Savon::SOAPFault => e
           puts "==========  ==========  =========="
           puts e.inspect
           puts "==========  ==========  =========="
