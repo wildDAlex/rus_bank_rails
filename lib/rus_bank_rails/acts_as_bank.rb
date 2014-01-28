@@ -16,14 +16,16 @@ module RusBankRails
       # Метод возвращает внутренний номер банка по БИК
 
       def BicToIntCode(bic)
-        check_and_update(bic).internal_code
+        resp = check_and_update(bic)
+        resp ? resp.internal_code : nil
       end
 
       ##
       # Метод возвращает регистрационный номер банка по БИК
 
       def BicToRegNumber(bic)
-        check_and_update(bic).reg_number
+        resp = check_and_update(bic)
+        resp ? resp.reg_number : nil
       end
 
       private
@@ -48,9 +50,13 @@ module RusBankRails
       # Метод создает новый банк в базе
 
       def new_bank(bic)
-        bank = self.class.new(get_info(bic))
-        bank.save
-        return bank
+        if info = get_info(bic)
+          bank = self.class.new(info)
+          bank.save
+          bank
+        else
+          nil
+        end
       end
 
 
@@ -58,20 +64,36 @@ module RusBankRails
       # Обновляет переданный экземпляр банка в базе
 
       def update_bank(bank)
-        bank.update(get_info(bank.bic))
-        return bank
+        info = get_info(bank.bic)
+                                                                        # Если обновлять запись теми же неизменными данными,
+        bank.update(info.merge(updated_at: Time.now)) unless info.nil?  # запись в бд реально не обновляется и поле updated_at
+                                                                        # остается неизменным, в итоге при каждом запросе
+                                                                        # дергается cbr.ru, что лишнее. Поэтому явно обновляем
+                                                                        # поле на текущее время.
+        bank
       end
 
       ##
       # Метод возвращает актуальную информацию по банку с сайта ЦБР
 
       def get_info(bic)
-        cbr = RusBank.new
-        internal_code = cbr.BicToIntCode(bic)
-        reg_number = cbr.BicToRegNumber(bic)
-        info = cbr.CreditInfoByIntCode(internal_code)
-        full_info = info[:co].merge(info[:lic]).merge(internal_code: internal_code, reg_number: reg_number)
-        full_info
+        begin
+          cbr = RusBank.new
+          internal_code = cbr.BicToIntCode(bic)
+          reg_number = cbr.BicToRegNumber(bic)
+          info = cbr.CreditInfoByIntCode(internal_code)
+        rescue SocketError => e
+          puts "==========  ==========  =========="
+          puts e.inspect
+          puts "==========  ==========  =========="
+          return nil
+        end
+
+        if internal_code && reg_number && info
+          info[:co].merge(info[:lic]).merge(internal_code: internal_code, reg_number: reg_number)
+        else
+          nil
+        end
       end
 
     end
