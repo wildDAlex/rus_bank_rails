@@ -65,11 +65,7 @@ module RusBankRails
 
       def update_bank(bank)
         info = get_info(bank.bic)
-                                                                        # Если обновлять запись теми же неизменными данными,
-        bank.update(info.merge(updated_at: Time.now)) unless info.nil?  # запись в бд реально не обновляется и поле updated_at
-                                                                        # остается неизменным, в итоге при каждом запросе
-                                                                        # дергается cbr.ru, что лишнее. Поэтому явно обновляем
-                                                                        # поле на текущее время.
+        bank.update(info.merge(updated_at: Time.now)) unless info.nil?
         bank
       end
 
@@ -81,7 +77,7 @@ module RusBankRails
           cbr = RusBank.new
           internal_code = cbr.BicToIntCode(bic)
           reg_number = cbr.BicToRegNumber(bic)
-          info = cbr.CreditInfoByIntCode(internal_code)
+          info = cbr.CreditInfoByIntCode(internal_code) if internal_code
         rescue SocketError, Savon::SOAPFault => e
           puts "==========  ==========  =========="
           puts e.inspect
