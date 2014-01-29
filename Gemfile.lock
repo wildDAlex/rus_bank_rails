@@ -37,8 +37,14 @@ GEM
     arel (4.0.1)
     atomic (1.1.14)
     builder (3.1.4)
+    database_cleaner (1.2.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
+    factory_girl (4.3.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.3.0)
+      factory_girl (~> 4.3.0)
+      railties (>= 3.0.0)
     gyoku (1.1.1)
       builder (>= 2.1.2)
     hike (1.2.3)
@@ -129,6 +135,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  database_cleaner
+  factory_girl_rails (~> 4.0)
   rspec-rails (~> 3.0.0.beta)
   rus_bank
   rus_bank_rails!
