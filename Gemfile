@@ -14,3 +14,7 @@ gemspec
 # gem 'debugger'
 
 gem "rus_bank"
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0.0.beta'
+end
