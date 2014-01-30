@@ -28,6 +28,32 @@ module RusBankRails
         resp ? resp.reg_number : nil
       end
 
+      ##
+      # Возвращает регистрационный номер банка по внутреннему номеру
+
+      def RegNumToIntCode(reg_number)
+        bank = self.class.find_by_reg_number(reg_number.to_i)
+        get_int_code_by_reg_number = lambda {
+          begin
+            cbr = RusBank.new
+            return cbr.RegNumToIntCode(reg_number)   # TODO: Тут требуется также инициировать создание банка в базе
+          rescue SocketError, Savon::SOAPFault => e
+            handle_exception(e)
+            return nil
+          end
+        }
+        if bank.nil?
+          get_int_code_by_reg_number[]
+        else
+          resp = check_and_update(bank.bic)
+          if resp.reg_number == reg_number.to_i   # на случай если после обновления записи в базе reg_number
+            resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
+          else
+            get_int_code_by_reg_number[]
+          end
+        end
+      end
+
       private
 
       ##
@@ -79,9 +105,7 @@ module RusBankRails
           reg_number = cbr.BicToRegNumber(bic)
           info = cbr.CreditInfoByIntCode(internal_code) if internal_code
         rescue SocketError, Savon::SOAPFault => e
-          puts "==========  ==========  =========="
-          puts e.inspect
-          puts "==========  ==========  =========="
+          handle_exception(e)
           return nil
         end
 
@@ -90,6 +114,12 @@ module RusBankRails
         else
           nil
         end
+      end
+
+      def handle_exception(e)
+        puts "==========  ==========  =========="
+        puts e.inspect
+        puts "==========  ==========  =========="
       end
 
     end
