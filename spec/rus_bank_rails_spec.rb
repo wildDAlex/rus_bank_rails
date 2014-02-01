@@ -31,7 +31,7 @@ describe Bank do
     end
 
     it 'should return db-entry if entry not expire' do
-      old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", internal_code: INVALID_INT_CODE)
+      FactoryGirl.create(:valid_bank, org_name: "Bank in Database", internal_code: INVALID_INT_CODE)
       @bank.BicToIntCode(FactoryGirl.attributes_for(:valid_bank)[:bic]).should eq INVALID_INT_CODE
     end
 
