@@ -14,7 +14,7 @@ FactoryGirl.define do
     f.director nil
     f.ust_money nil
     f.org_status nil
-    f.reg_code nil
+    f.reg_code 16
     f.ssv_date nil
     f.l_code nil
     f.lt nil
