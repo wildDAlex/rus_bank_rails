@@ -36,7 +36,10 @@ module RusBankRails
         get_int_code_by_reg_number = lambda {
           begin
             cbr = RusBank.new
-            return cbr.RegNumToIntCode(reg_number)   # TODO: Тут требуется также инициировать создание банка в базе
+            internal_code = cbr.RegNumToIntCode(reg_number)
+            bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
+            check_and_update(bic)
+            return internal_code
           rescue SocketError, Savon::SOAPFault => e
             handle_exception(e)
             return nil

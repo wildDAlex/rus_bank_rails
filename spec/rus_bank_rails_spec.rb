@@ -3,18 +3,19 @@ require 'factories'
 
 VALID_BIC = FactoryGirl.attributes_for(:valid_bank)[:bic]
 INVALID_BIC = '0445852169999'
-VALID_INT_CODE = 450000650
+VALID_INT_CODE = FactoryGirl.attributes_for(:valid_bank)[:internal_code]
 INVALID_INT_CODE = 450000650999999
-VALID_REG_NUMBER = '316'
+VALID_REG_NUMBER = FactoryGirl.attributes_for(:valid_bank)[:reg_number]
 INVALID_REG_NUMBER = '289375237580009'
 VALID_REGION = '16'
 INVALID_REGION = '999'
 INVALID_ORG_NAME = 'djhgsjdlksl'
-VALID_ORG_NAME = 'ХКФ БАНК'
+VALID_ORG_NAME = FactoryGirl.attributes_for(:valid_bank)[:org_name]
 
 describe Bank do
 
   describe '.BicToIntCode' do
+
     before :each do
       DatabaseCleaner.clean
       @bank = Bank.new
@@ -61,5 +62,18 @@ describe Bank do
       expect(Bank.find_by_bic(VALID_BIC).reg_number).to_not be nil
       expect(Bank.find_by_bic(VALID_BIC).org_name).to_not be nil
     end
+  end
+
+  describe ".RegNumToIntCode" do
+
+    before :each do
+      DatabaseCleaner.clean
+      @bank = Bank.new
+    end
+
+    it 'should return correct value' do
+      @bank.RegNumToIntCode(VALID_REG_NUMBER).should eq(VALID_INT_CODE)
+    end
+
   end
 end
