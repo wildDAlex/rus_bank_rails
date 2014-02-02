@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.summary     = "DB-версия гема rus_bank."
   s.description = "Надстройка над гемом rus_bank, реализующая локальное хранилище."
 
-  s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.rdoc", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.0.0"

@@ -1,7 +1,5 @@
 class RusBankRailsGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('../rus_bank_rails_generator', __FILE__)
-  #source_root(File.expand_path(File.dirname(__FILE__))
-
 
   def generate
     migration_file_name = "db/migrate/#{Time.now.strftime("%Y%m%d%H%M%S")}_create_#{plural_name.parameterize.underscore}.rb"
