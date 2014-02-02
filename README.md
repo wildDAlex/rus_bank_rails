@@ -23,7 +23,7 @@ Rails-обертка вокруг гема rus_bank - https://github.com/wildDAl
     $ rails generate rus_bank_rails Bank
 
 , где Bank - имя генерируемой модели.
-Генератор создаст файл миграции м файл модели.
+Генератор создаст файл миграции и файл модели.
 
 Выполняем миграцию:
 
@@ -31,9 +31,9 @@ Rails-обертка вокруг гема rus_bank - https://github.com/wildDAl
 
 На этом все. Далее можно кастомизировать модель по своему усмотрению.
 
-# Пример использования:
+Пример использования:
 
     @bank = Bank.new
     internal_code = @bank.BicToIntCode(some_bank_bic)
 
-Описание доступных методов тут - http://rubydoc.info/gems/rus_bank/RusBankRails
+Описание доступных методов тут - http://rubydoc.info/gems/rus_bank_rails/RusBankRails
