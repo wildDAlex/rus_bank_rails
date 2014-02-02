@@ -36,4 +36,9 @@ Rails-обертка вокруг гема rus_bank - https://github.com/wildDAl
     @bank = Bank.new
     internal_code = @bank.BicToIntCode(some_bank_bic)
 
-Описание доступных методов тут - http://rubydoc.info/gems/rus_bank_rails/RusBankRails
+Описание доступных методов тут - http://rubydoc.info/gems/rus_bank_rails/RusBankRails/ActsAsBank/LocalInstanceMethods
+
+## Copyright
+
+Copyright (c) 2014 Denis Aleksandrov. See LICENSE.txt for
+further details.
