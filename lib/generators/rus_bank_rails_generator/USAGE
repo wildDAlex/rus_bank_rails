@@ -1,0 +1,9 @@
+Description:
+    Provides prerequisities to work with rus_bank_rails gem
+
+Example:
+    rails generate rus_bank_rails Bank
+
+    This will create:
+        bank.rb in app/models
+        {timestamp}_create_banks.rb in db/migrations
