@@ -75,6 +75,10 @@ describe Bank do
       @bank.RegNumToIntCode(VALID_REG_NUMBER).should eq(VALID_INT_CODE)
     end
 
+    it 'should return nil if value incorrect' do
+      @bank.RegNumToIntCode(INVALID_REG_NUMBER).should be_nil
+    end
+
     it 'saves new bank to database' do
       expect{
         @bank.RegNumToIntCode(VALID_REG_NUMBER)
@@ -98,6 +102,7 @@ describe Bank do
       @bank.RegNumToIntCode(old_db_entry.reg_number)
       Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
     end
+    
 
   end
 end
