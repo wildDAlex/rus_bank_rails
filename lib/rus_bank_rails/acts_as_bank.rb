@@ -29,7 +29,7 @@ module RusBankRails
       end
 
       ##
-      # Возвращает регистрационный номер банка по внутреннему номеру
+      # Возвращает внутренний номер по регистрационному номеру
 
       def RegNumToIntCode(reg_number)
         bank = self.class.find_by_reg_number(reg_number.to_i)
@@ -53,6 +53,37 @@ module RusBankRails
             resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
           else
             get_int_code_by_reg_number[]
+          end
+        end
+      end
+
+      ##
+      # Возвращает регистрационный номер по внутреннему номеру
+
+      def IntCodeToRegNum(internal_code)
+        bank = self.class.find_by_internal_code(internal_code.to_i)
+        get_reg_number = lambda {
+          begin
+            cbr = RusBank.new
+            info = cbr.CreditInfoByIntCode(internal_code)
+            if info.nil?
+              return nil
+            else
+              return check_and_update(info[:co][:bic]).reg_number[]
+            end
+          rescue SocketError, Savon::SOAPFault => e
+            handle_exception(e)
+            return nil
+          end
+        }
+        if bank.nil?
+          get_reg_number.call
+        else
+          resp = check_and_update(bank.bic)
+          if resp.internal_code == internal_code.to_i
+            resp.reg_number
+          else
+            get_reg_number.call
           end
         end
       end
