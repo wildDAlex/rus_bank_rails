@@ -1,8 +1,10 @@
 PATH
   remote: .
   specs:
-    rus_bank_rails (0.2.3)
-      rails (~> 4.0.0)
+    rus_bank_rails (0.2.4)
+      rails (>= 3.2.0)
+      rus_bank
+      savon (~> 2.3.3)
 
 GEM
   remote: https://rubygems.org/

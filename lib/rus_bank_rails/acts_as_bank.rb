@@ -1,3 +1,7 @@
+# encoding: utf-8
+require 'savon'
+require 'rus_bank'
+
 module RusBankRails
   module ActsAsBank
     extend ActiveSupport::Concern
