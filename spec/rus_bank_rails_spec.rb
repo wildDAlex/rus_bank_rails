@@ -6,7 +6,7 @@ INVALID_BIC = '0445852169999'
 VALID_INT_CODE = FactoryGirl.attributes_for(:valid_bank)[:internal_code]
 INVALID_INT_CODE = 450000650999999
 VALID_REG_NUMBER = FactoryGirl.attributes_for(:valid_bank)[:reg_number]
-INVALID_REG_NUMBER = '289375237580009'
+INVALID_REG_NUMBER = 289375237580009
 VALID_REGION = FactoryGirl.attributes_for(:valid_bank)[:reg_code]
 INVALID_REGION = '999'
 INVALID_ORG_NAME = 'djhgsjdlksl'
@@ -118,6 +118,30 @@ describe Bank do
 
     it 'should return nil if value incorrect' do
       @bank.IntCodeToRegNum(INVALID_INT_CODE).should be_nil
+    end
+
+    it 'saves new bank to database' do
+      expect{
+        @bank.IntCodeToRegNum(VALID_INT_CODE)
+      }.to change{Bank.all.count}.by(1)
+    end
+
+    it 'should return db-entry if entry not expire' do
+      FactoryGirl.create(:valid_bank, org_name: "Bank in Database", reg_number: INVALID_REG_NUMBER)
+      @bank.IntCodeToRegNum(VALID_INT_CODE).should eq INVALID_REG_NUMBER
+    end
+
+    it 'should not dublicate db-entry if bank already exist and not expire' do
+      old_db_entry = FactoryGirl.create(:valid_bank)
+      expect{
+        @bank.IntCodeToRegNum(old_db_entry.internal_code)
+      }.to change{Bank.all.count}.by(0)
+    end
+
+    it 'should update bank in database if entry expires' do
+      old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Old name", updated_at: (Time.now - 1.month))
+      @bank.IntCodeToRegNum(old_db_entry.internal_code)
+      Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
     end
 
   end
