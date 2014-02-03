@@ -46,13 +46,13 @@ module RusBankRails
           end
         }
         if bank.nil?
-          get_int_code_by_reg_number[]
+          get_int_code_by_reg_number.call
         else
           resp = check_and_update(bank.bic)
           if resp.reg_number == reg_number.to_i   # на случай если после обновления записи в базе reg_number
             resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
           else
-            get_int_code_by_reg_number[]
+            get_int_code_by_reg_number.call
           end
         end
       end
@@ -69,7 +69,7 @@ module RusBankRails
             if info.nil?
               return nil
             else
-              return check_and_update(info[:co][:bic]).reg_number[]
+              return check_and_update(info[:co][:bic]).reg_number
             end
           rescue SocketError, Savon::SOAPFault => e
             handle_exception(e)

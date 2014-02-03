@@ -102,7 +102,23 @@ describe Bank do
       @bank.RegNumToIntCode(old_db_entry.reg_number)
       Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
     end
-    
+
+  end
+
+  describe ".IntCodeToRegNum" do
+
+    before :each do
+      DatabaseCleaner.clean
+      @bank = Bank.new
+    end
+
+    it 'should return correct value' do
+      @bank.IntCodeToRegNum(VALID_INT_CODE).should eq(VALID_REG_NUMBER)
+    end
+
+    it 'should return nil if value incorrect' do
+      @bank.IntCodeToRegNum(INVALID_INT_CODE).should be_nil
+    end
 
   end
 end
