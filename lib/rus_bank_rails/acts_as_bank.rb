@@ -102,7 +102,7 @@ module RusBankRails
         if bank.nil?
           new_bank(bic)
         else
-          if bank.updated_at < 1.minute.ago
+          if expire?(bank)
             update_bank(bank)
           else
             bank
@@ -152,6 +152,13 @@ module RusBankRails
         else
           nil
         end
+      end
+
+      ##
+      # Проверяет, необходимо ли обновлять информацию по банку
+
+      def expire?(bank)
+        bank.updated_at < 1.minute.ago
       end
 
       def handle_exception(e)
