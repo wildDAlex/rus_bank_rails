@@ -92,6 +92,16 @@ module RusBankRails
         end
       end
 
+      ##
+      # Проверяет, необходимо ли обновлять информацию по банку
+
+      def expire?(bank)
+        time = Time.now.in_time_zone("Moscow")
+        updated_at = bank.updated_at.in_time_zone("Moscow")
+        not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
+        #bank.updated_at < 1.minute.ago             # TODO: Заглушка, раскомментировать логику выше на продакшене
+      end
+
       private
 
       ##
@@ -152,13 +162,6 @@ module RusBankRails
         else
           nil
         end
-      end
-
-      ##
-      # Проверяет, необходимо ли обновлять информацию по банку
-
-      def expire?(bank)
-        bank.updated_at < 1.minute.ago
       end
 
       def handle_exception(e)
