@@ -99,7 +99,6 @@ module RusBankRails
         time = Time.now.in_time_zone("Moscow")
         updated_at = bank.updated_at.in_time_zone("Moscow")
         not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
-        #bank.updated_at < 1.minute.ago             # TODO: Заглушка, раскомментировать логику выше на продакшене
       end
 
       private
