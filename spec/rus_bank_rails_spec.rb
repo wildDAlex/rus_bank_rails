@@ -62,6 +62,13 @@ describe Bank do
       expect(Bank.find_by_bic(VALID_BIC).reg_number).to_not be nil
       expect(Bank.find_by_bic(VALID_BIC).org_name).to_not be nil
     end
+
+    it 'deletes bank from database if bank not found in api' do
+      old_db_entry = FactoryGirl.create(:valid_bank, bic: '111111111', updated_at: (Time.now - 1.month))
+      expect{
+        @bank.BicToIntCode(old_db_entry.bic)
+      }.to change{Bank.all.count}.by(-1)
+    end
   end
 
   describe ".RegNumToIntCode" do
