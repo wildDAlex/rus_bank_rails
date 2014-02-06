@@ -162,7 +162,14 @@ module RusBankRails
         end
 
         if internal_code && reg_number && info
-          info[:co].merge(info[:lic]).merge(internal_code: internal_code, reg_number: reg_number)
+          if info[:lic].nil?
+            lic = {}
+          elsif info[:lic].instance_of?(Array)
+            lic = info[:lic].first              # TODO: Заглушка. Как оказалось, может быть указано более 1 лицензии.
+          else
+            lic = info[:lic]
+          end
+          info[:co].merge(lic).merge(internal_code: internal_code, reg_number: reg_number)
         else
           nil
         end
