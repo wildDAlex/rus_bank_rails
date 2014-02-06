@@ -138,8 +138,13 @@ module RusBankRails
 
       def update_bank(bank)
         info = get_info(bank.bic)
-        bank.update(info.merge(updated_at: Time.now)) unless info.nil?
-        bank
+        if info.nil?
+          bank.delete
+          nil
+        else
+          bank.update(info.merge(updated_at: Time.now))
+          bank
+        end
       end
 
       ##
