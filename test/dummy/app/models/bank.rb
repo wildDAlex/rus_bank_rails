@@ -1,6 +1,8 @@
 class Bank < ActiveRecord::Base
   acts_as_bank
 
+  serialize :licences, Array
+
   ##
   # Переопределение метода для дев-окружения
 

@@ -101,6 +101,17 @@ module RusBankRails
         not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
       end
 
+      ##
+      # Возвращает десериализованный массив хешей лицензий банка
+
+      def get_licences_as_array_of_hashes
+        lics = []
+        self.licences.each do |lic|
+          lics << {l_code: lic[:l_code], lt: lic[:lt].force_encoding("UTF-8"), l_date: lic[:l_date]}
+        end
+        lics
+      end
+
       private
 
       ##
@@ -162,12 +173,12 @@ module RusBankRails
         end
 
         if internal_code && reg_number && info
-          if info[:lic].nil?
+          if info[:lic].nil?                      # Лицензии нет
             lic = {}
-          elsif info[:lic].instance_of?(Array)
-            lic = info[:lic].first              # TODO: Заглушка. Как оказалось, может быть указано более 1 лицензии.
-          else
-            lic = info[:lic]
+          elsif info[:lic].instance_of?(Array)    # API вернул более одной лицензии
+            lic = {:licences => info[:lic]}
+          else                                    # Одна лицензия, приводим ее к массиву из одного элемента
+            lic = {:licences => [info[:lic]]}
           end
           info[:co].merge(lic).merge(internal_code: internal_code, reg_number: reg_number)
         else

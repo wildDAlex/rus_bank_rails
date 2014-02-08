@@ -17,9 +17,7 @@ class CreateMigration < ActiveRecord::Migration
       t.string   "org_status"
       t.integer  "reg_code"
       t.date     "ssv_date"
-      t.integer  "l_code"
-      t.string   "lt"
-      t.date     "l_date"
+      t.text     "licences"
       t.timestamps
     end
   end

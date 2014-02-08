@@ -16,8 +16,6 @@ FactoryGirl.define do
     f.org_status nil
     f.reg_code 16
     f.ssv_date nil
-    f.l_code nil
-    f.lt nil
-    f.l_date nil
+    f.licences nil
   end
 end

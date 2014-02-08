@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rus_bank_rails (0.3.2)
+    rus_bank_rails (0.3.3)
       rails (>= 3.2.0)
       rus_bank
       savon (~> 2.3.3)
@@ -36,7 +36,7 @@ GEM
     akami (1.2.0)
       gyoku (>= 0.4.0)
       nokogiri (>= 1.4.0)
-    arel (4.0.1)
+    arel (4.0.2)
     atomic (1.1.14)
     builder (3.1.4)
     database_cleaner (1.2.0)
