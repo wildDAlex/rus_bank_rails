@@ -95,9 +95,9 @@ module RusBankRails
       ##
       # Проверяет, необходимо ли обновлять информацию по банку
 
-      def expire?(bank)
+      def expire?
         time = Time.now.in_time_zone("Moscow")
-        updated_at = bank.updated_at.in_time_zone("Moscow")
+        updated_at = self.updated_at.in_time_zone("Moscow")
         not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
       end
 
@@ -122,7 +122,7 @@ module RusBankRails
         if bank.nil?
           new_bank(bic)
         else
-          if expire?(bank)
+          if bank.expire?
             update_bank(bank)
           else
             bank

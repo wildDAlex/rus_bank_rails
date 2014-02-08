@@ -6,8 +6,8 @@ class Bank < ActiveRecord::Base
   ##
   # Переопределение метода для дев-окружения
 
-  def expire?(bank)
-    bank.updated_at < 1.minute.ago
+  def expire?
+    self.updated_at < 1.minute.ago
   end
 
 end
