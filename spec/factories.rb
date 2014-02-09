@@ -13,7 +13,7 @@ FactoryGirl.define do
     f.fact_adr nil
     f.director nil
     f.ust_money nil
-    f.org_status nil
+    f.org_status "норм."
     f.reg_code 16
     f.ssv_date nil
     f.licences nil

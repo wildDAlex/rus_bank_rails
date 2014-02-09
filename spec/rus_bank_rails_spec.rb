@@ -179,4 +179,21 @@ describe Bank do
     end
 
   end
+
+  describe ".is_active?" do
+
+    before :each do
+      DatabaseCleaner.clean
+      @bank = Bank.new
+    end
+
+    it 'should return true if bank has licences and positive org_status' do
+      not_active = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", org_status: "лицензия отозвана", licences: [])
+      active = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", org_status: "норм.", licences: [{:l_code=>"3", :lt=>"Лицензия 4", :l_date=>"2007-12-20T00:00:00+04:00"}])
+      expect(not_active.is_active?).to be false
+      expect(active.is_active?).to be true
+    end
+
+  end
+
 end
