@@ -152,4 +152,31 @@ describe Bank do
     end
 
   end
+
+  describe ".get_licences_as_array_of_hashes" do
+
+    before :each do
+      DatabaseCleaner.clean
+      @bank = Bank.new
+    end
+
+    it 'should return empty array for bank with no licence' do
+      entry = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", licences: [])
+      expect(entry.get_licences_as_array_of_hashes).to eq([])
+    end
+
+    it 'should return array of one element for bank with one licence' do
+      entry = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", licences: [{:l_code=>"7", :lt=>"Лицензия 1", :l_date=>"2012-09-10T00:00:00+04:00"}])
+      expect(entry.get_licences_as_array_of_hashes.size).to eq(1)
+      expect(entry.get_licences_as_array_of_hashes.first[:lt]).to eq("Лицензия 1")
+    end
+
+    it 'should return array of multiple element for bank with no multiple licences' do
+      entry = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", licences: [{:l_code=>"3", :lt=>"Лицензия 2", :l_date=>"2007-12-20T00:00:00+04:00"}, {:l_code=>"7", :lt=>"Лицензия 3", :l_date=>"2012-03-23T00:00:00+04:00"}])
+      expect(entry.get_licences_as_array_of_hashes.size).to eq(2)
+      expect(entry.get_licences_as_array_of_hashes.first[:lt]).to eq("Лицензия 2")
+      expect(entry.get_licences_as_array_of_hashes.last[:lt]).to eq("Лицензия 3")
+    end
+
+  end
 end
