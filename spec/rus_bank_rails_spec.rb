@@ -196,4 +196,18 @@ describe Bank do
 
   end
 
+  describe ".SearchByName" do
+
+    before :each do
+      DatabaseCleaner.clean
+      @bank = Bank.new
+    end
+
+    it 'should return correct value' do
+      expect( @bank.SearchByName(VALID_ORG_NAME).length ).to be(1)
+      expect( @bank.SearchByName(VALID_ORG_NAME).first[:org_name] ).to eq(VALID_ORG_NAME)
+    end
+
+  end
+
 end

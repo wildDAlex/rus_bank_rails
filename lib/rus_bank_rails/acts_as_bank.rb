@@ -93,6 +93,19 @@ module RusBankRails
       end
 
       ##
+      # Поиск по названию банка. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def SearchByName(bank_name)
+        begin
+          cbr = RusBank.new
+          cbr.SearchByName(bank_name)
+        rescue SocketError, Savon::SOAPFault => e
+          handle_exception(e)
+          return nil
+        end
+      end
+
+      ##
       # Проверяет, необходимо ли обновлять информацию по банку
 
       def expire?
