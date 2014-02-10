@@ -78,7 +78,8 @@ describe Bank do
     end
 
     it 'should return nil if value incorrect' do
-      @bank.RegNumToIntCode(INVALID_REG_NUMBER).should be_nil
+      #@bank.RegNumToIntCode(INVALID_REG_NUMBER).should be_nil
+      expect{ @bank.RegNumToIntCode(INVALID_REG_NUMBER) }.to raise_error Savon::SOAPFault
     end
 
     it 'saves new bank to database' do

@@ -38,16 +38,16 @@ module RusBankRails
       def RegNumToIntCode(reg_number)
         bank = self.class.find_by_reg_number(reg_number.to_i)
         get_int_code_by_reg_number = lambda {
-          begin
+          #begin
             cbr = RusBank.new
             internal_code = cbr.RegNumToIntCode(reg_number)
             bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
             check_and_update(bic)
             return internal_code.to_i
-          rescue SocketError, Savon::SOAPFault => e
-            handle_exception(e)
-            return nil
-          end
+          #rescue SocketError, Savon::SOAPFault => e
+          #  handle_exception(e)
+          #  return nil
+          #end
         }
         if bank.nil?
           get_int_code_by_reg_number.call
@@ -67,7 +67,7 @@ module RusBankRails
       def IntCodeToRegNum(internal_code)
         bank = self.class.find_by_internal_code(internal_code.to_i)
         get_reg_number = lambda {
-          begin
+          #begin
             cbr = RusBank.new
             info = cbr.CreditInfoByIntCode(internal_code)
             if info.nil?
@@ -75,10 +75,10 @@ module RusBankRails
             else
               return check_and_update(info[:co][:bic]).reg_number
             end
-          rescue SocketError, Savon::SOAPFault => e
-            handle_exception(e)
-            return nil
-          end
+          #rescue SocketError, Savon::SOAPFault => e
+          #  handle_exception(e)
+          #  return nil
+          #end
         }
         if bank.nil?
           get_reg_number.call
@@ -96,13 +96,8 @@ module RusBankRails
       # Поиск по названию банка. Прокси метод, при каждом вызове обращается к внешнему API.
 
       def SearchByName(bank_name)
-        begin
-          cbr = RusBank.new
-          cbr.SearchByName(bank_name)
-        rescue SocketError, Savon::SOAPFault => e
-          handle_exception(e)
-          return nil
-        end
+        cbr = RusBank.new
+        cbr.SearchByName(bank_name)
       end
 
       ##
@@ -182,15 +177,15 @@ module RusBankRails
       # Метод возвращает актуальную информацию по банку с сайта ЦБР
 
       def get_info(bic)
-        begin
+        #begin
           cbr = RusBank.new
           internal_code = cbr.BicToIntCode(bic)
           reg_number = cbr.BicToRegNumber(bic)
           info = cbr.CreditInfoByIntCode(internal_code) if internal_code
-        rescue SocketError, Savon::SOAPFault => e
-          handle_exception(e)
-          return nil
-        end
+        #rescue SocketError, Savon::SOAPFault => e
+        #  handle_exception(e)
+        #  return nil
+        #end
 
         if internal_code && reg_number && info
           if info[:lic].nil?                      # Лицензии нет
