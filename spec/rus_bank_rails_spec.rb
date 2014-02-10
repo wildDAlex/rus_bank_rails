@@ -14,12 +14,12 @@ VALID_ORG_NAME = FactoryGirl.attributes_for(:valid_bank)[:org_name]
 
 describe Bank do
 
-  describe '.BicToIntCode' do
+  before :each do
+    DatabaseCleaner.clean
+    @bank = Bank.new
+  end
 
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
+  describe '.BicToIntCode' do
 
     it 'should return correct value' do   # Unneeded, already tested in RusBank
       @bank.BicToIntCode(VALID_BIC).should eq(VALID_INT_CODE)
@@ -73,11 +73,6 @@ describe Bank do
 
   describe ".RegNumToIntCode" do
 
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
-
     it 'should return correct value' do
       @bank.RegNumToIntCode(VALID_REG_NUMBER).should eq(VALID_INT_CODE)
     end
@@ -113,11 +108,6 @@ describe Bank do
   end
 
   describe ".IntCodeToRegNum" do
-
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
 
     it 'should return correct value' do
       @bank.IntCodeToRegNum(VALID_INT_CODE).should eq(VALID_REG_NUMBER)
@@ -155,11 +145,6 @@ describe Bank do
 
   describe ".get_licences_as_array_of_hashes" do
 
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
-
     it 'should return empty array for bank with no licence' do
       entry = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", licences: [])
       expect(entry.get_licences_as_array_of_hashes).to eq([])
@@ -182,11 +167,6 @@ describe Bank do
 
   describe ".is_active?" do
 
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
-
     it 'should return true if bank has licences and positive org_status' do
       not_active = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", org_status: "лицензия отозвана", licences: [])
       active = FactoryGirl.create(:valid_bank, org_name: "Bank in Database", org_status: "норм.", licences: [{:l_code=>"3", :lt=>"Лицензия 4", :l_date=>"2007-12-20T00:00:00+04:00"}])
@@ -197,11 +177,6 @@ describe Bank do
   end
 
   describe ".SearchByName" do
-
-    before :each do
-      DatabaseCleaner.clean
-      @bank = Bank.new
-    end
 
     it 'should return correct value' do
       expect( @bank.SearchByName(VALID_ORG_NAME).length ).to be(1)
