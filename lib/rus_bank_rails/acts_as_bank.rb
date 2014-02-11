@@ -101,6 +101,46 @@ module RusBankRails
       end
 
       ##
+      # Список банков по коду региона. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def SearchByRegionCode(region_code)
+        cbr = RusBank.new
+        cbr.SearchByRegionCode(region_code)
+      end
+
+      ##
+      # Возвращает список отделений по внутреннему номеру банка. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def GetOffices(int_code)
+        cbr = RusBank.new
+        cbr.GetOffices(int_code)
+      end
+
+      ##
+      # Список филиалов в указанном регионе. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def GetOfficesByRegion(region_code)
+        cbr = RusBank.new
+        cbr.GetOfficesByRegion(region_code)
+      end
+
+      ##
+      # Полный список банков. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def EnumBic
+        cbr = RusBank.new
+        cbr.EnumBic
+      end
+
+      ##
+      # Список регионов. Прокси метод, при каждом вызове обращается к внешнему API.
+
+      def RegionsEnum
+        cbr = RusBank.new
+        cbr.RegionsEnum
+      end
+
+      ##
       # Проверяет, необходимо ли обновлять информацию по банку
 
       def expire?

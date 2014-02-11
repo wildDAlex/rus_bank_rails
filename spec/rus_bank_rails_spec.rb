@@ -186,4 +186,24 @@ describe Bank do
 
   end
 
+  describe ".SearchByRegionCode" do
+    it 'waiting for tests'
+  end
+
+  describe ".GetOffices" do
+    it 'waiting for tests'
+  end
+
+  describe ".GetOfficesByRegion" do
+    it 'waiting for tests'
+  end
+
+  describe ".EnumBic" do
+    it 'waiting for tests'
+  end
+
+  describe ".RegionsEnum" do
+    it 'waiting for tests'
+  end
+
 end
