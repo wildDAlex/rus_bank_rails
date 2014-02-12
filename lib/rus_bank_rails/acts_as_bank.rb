@@ -82,6 +82,23 @@ module RusBankRails
         end
       end
 
+      ##
+      # Поиск по названию банка. Прокси метод, при каждом вызове обращается к внешнему API. Возвращает массив записей из базы.
+
+      def SearchByName(bank_name)
+        cbr = RusBank.new
+        result = cbr.SearchByName(bank_name)
+        if(result)
+          banks = []
+          result.each do |b|
+            bank = check_and_update_by_internal_code(b[:int_code])
+            banks << bank #unless bank.nil?
+          end
+          banks
+        else
+          nil
+        end
+      end
 
       ##
       # Список банков по коду региона. Прокси метод, при каждом вызове обращается к внешнему API.
