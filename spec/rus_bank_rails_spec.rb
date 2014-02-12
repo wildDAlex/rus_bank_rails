@@ -184,6 +184,19 @@ describe Bank do
       expect( @bank.SearchByName(VALID_ORG_NAME).first.org_name ).to eq(VALID_ORG_NAME)
     end
 
+    it 'should return nil if find nothing' do
+      @bank.SearchByName(INVALID_ORG_NAME).should be_nil
+    end
+
+    it 'should return db-entry if entry not expire' do
+      FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
+      expect( @bank.SearchByName(VALID_ORG_NAME).first.org_name ).to eq("Bank in Database")
+    end
+
+    it 'should return array of banks' do
+      @bank.SearchByName("Московский").length.should be > 1
+    end
+
   end
 
   describe ".SearchByRegionCode" do
