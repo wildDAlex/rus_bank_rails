@@ -164,7 +164,7 @@ module RusBankRails
       # Возвращает true, если банк действующий
 
       def is_active?
-        (self.org_status != "лицензия отозвана") && !(self.get_licences_as_array_of_hashes.empty?)
+        (self.org_status != "лицензия отозвана") && (self.org_status != "ликвидирована") && !(self.get_licences_as_array_of_hashes.empty?)
       end
 
       private
