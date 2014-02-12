@@ -20,7 +20,7 @@ module RusBankRails
       # Метод возвращает внутренний номер банка по БИК
 
       def BicToIntCode(bic)
-        resp = check_and_update(bic)
+        resp = check_and_update_by_bic(bic)
         resp ? resp.internal_code : nil
       end
 
@@ -28,7 +28,7 @@ module RusBankRails
       # Метод возвращает регистрационный номер банка по БИК
 
       def BicToRegNumber(bic)
-        resp = check_and_update(bic)
+        resp = check_and_update_by_bic(bic)
         resp ? resp.reg_number : nil
       end
 
@@ -38,21 +38,16 @@ module RusBankRails
       def RegNumToIntCode(reg_number)
         bank = self.class.find_by_reg_number(reg_number.to_i)
         get_int_code_by_reg_number = lambda {
-          #begin
             cbr = RusBank.new
             internal_code = cbr.RegNumToIntCode(reg_number)
             bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
-            check_and_update(bic)
+            check_and_update_by_bic(bic)
             return internal_code.to_i
-          #rescue SocketError, Savon::SOAPFault => e
-          #  handle_exception(e)
-          #  return nil
-          #end
         }
         if bank.nil?
           get_int_code_by_reg_number.call
         else
-          resp = check_and_update(bank.bic)
+          resp = check_and_update_by_bic(bank.bic)
           if resp.reg_number == reg_number.to_i   # на случай если после обновления записи в базе reg_number
             resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
           else
@@ -67,23 +62,18 @@ module RusBankRails
       def IntCodeToRegNum(internal_code)
         bank = self.class.find_by_internal_code(internal_code.to_i)
         get_reg_number = lambda {
-          #begin
             cbr = RusBank.new
             info = cbr.CreditInfoByIntCode(internal_code)
             if info.nil?
               return nil
             else
-              return check_and_update(info[:co][:bic]).reg_number
+              return check_and_update_by_bic(info[:co][:bic]).reg_number
             end
-          #rescue SocketError, Savon::SOAPFault => e
-          #  handle_exception(e)
-          #  return nil
-          #end
         }
         if bank.nil?
           get_reg_number.call
         else
-          resp = check_and_update(bank.bic)
+          resp = check_and_update_by_bic(bank.bic)
           if resp.internal_code == internal_code.to_i
             resp.reg_number
           else
@@ -92,13 +82,6 @@ module RusBankRails
         end
       end
 
-      ##
-      # Поиск по названию банка. Прокси метод, при каждом вызове обращается к внешнему API.
-
-      def SearchByName(bank_name)
-        cbr = RusBank.new
-        cbr.SearchByName(bank_name)
-      end
 
       ##
       # Список банков по коду региона. Прокси метод, при каждом вызове обращается к внешнему API.
@@ -172,10 +155,26 @@ module RusBankRails
       ##
       # Метод проверяет дату обновления записи в базе и пытается обновить в случае необходимости
 
-      def check_and_update(bic)
+      def check_and_update_by_bic(bic)
         bank = self.class.find_by_bic(bic)
         if bank.nil?
-          new_bank(bic)
+          new_bank_by_bic(bic)
+        else
+          if bank.expire?
+            update_bank(bank)
+          else
+            bank
+          end
+        end
+      end
+
+      ##
+      # Метод проверяет дату обновления записи в базе и пытается обновить в случае необходимости
+
+      def check_and_update_by_internal_code(internal_code)
+        bank = self.class.find_by_internal_code(internal_code)
+        if bank.nil?
+          new_bank_by_internal_code(internal_code)
         else
           if bank.expire?
             update_bank(bank)
@@ -188,8 +187,21 @@ module RusBankRails
       ##
       # Метод создает новый банк в базе
 
-      def new_bank(bic)
-        if info = get_info(bic)
+      def new_bank_by_bic(bic)
+        if info = get_info_by_bic(bic)
+          bank = self.class.new(info)
+          bank.save
+          bank
+        else
+          nil
+        end
+      end
+
+      ##
+      # Метод создает новый банк в базе
+
+      def new_bank_by_internal_code(internal_code)
+        if info = get_info_by_internal_code(internal_code)
           bank = self.class.new(info)
           bank.save
           bank
@@ -203,7 +215,7 @@ module RusBankRails
       # Обновляет переданный экземпляр банка в базе
 
       def update_bank(bank)
-        info = get_info(bank.bic)
+        info = get_info_by_internal_code(bank.internal_code)
         if info.nil?
           bank.delete
           nil
@@ -214,20 +226,36 @@ module RusBankRails
       end
 
       ##
-      # Метод возвращает актуальную информацию по банку с сайта ЦБР
+      # Метод возвращает актуальную информацию по банку с сайта ЦБР по БИК банка
 
-      def get_info(bic)
-        #begin
+      def get_info_by_bic(bic)
           cbr = RusBank.new
           internal_code = cbr.BicToIntCode(bic)
-          reg_number = cbr.BicToRegNumber(bic)
-          info = cbr.CreditInfoByIntCode(internal_code) if internal_code
+          get_info_by_internal_code(internal_code) if internal_code
+      end
+
+      ##
+      # Метод возвращает актуальную информацию по банку с сайта ЦБР по регистрационному номеру
+
+      def get_info_by_reg_number(reg_number)
+        cbr = RusBank.new
+        internal_code = cbr.RegNumToIntCode(reg_number)
+        get_info_by_internal_code(internal_code) if internal_code
+      end
+
+      ##
+      # Метод возвращает актуальную информацию по банку с сайта ЦБР по внутреннему коду
+
+      def get_info_by_internal_code(internal_code)
+        #begin
+        cbr = RusBank.new
+        info = cbr.CreditInfoByIntCode(internal_code)
         #rescue SocketError, Savon::SOAPFault => e
         #  handle_exception(e)
         #  return nil
         #end
 
-        if internal_code && reg_number && info
+        if info
           if info[:lic].nil?                      # Лицензии нет
             lic = {}
           elsif info[:lic].instance_of?(Array)    # API вернул более одной лицензии
@@ -235,7 +263,7 @@ module RusBankRails
           else                                    # Одна лицензия, приводим ее к массиву из одного элемента
             lic = {:licences => [info[:lic]]}
           end
-          info[:co].merge(lic).merge(internal_code: internal_code, reg_number: reg_number)
+          info[:co].merge(lic).merge(internal_code: internal_code)
         else
           nil
         end

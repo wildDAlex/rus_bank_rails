@@ -64,7 +64,7 @@ describe Bank do
     end
 
     it 'deletes bank from database if bank not found in api' do
-      old_db_entry = FactoryGirl.create(:valid_bank, bic: '111111111', updated_at: (Time.now - 1.month))
+      old_db_entry = FactoryGirl.create(:valid_bank, bic: '111111111', internal_code: '89899999', updated_at: (Time.now - 1.month))
       expect{
         @bank.BicToIntCode(old_db_entry.bic)
       }.to change{Bank.all.count}.by(-1)
@@ -181,7 +181,7 @@ describe Bank do
 
     it 'should return correct value' do
       expect( @bank.SearchByName(VALID_ORG_NAME).length ).to be(1)
-      expect( @bank.SearchByName(VALID_ORG_NAME).first[:org_name] ).to eq(VALID_ORG_NAME)
+      expect( @bank.SearchByName(VALID_ORG_NAME).first.org_name ).to eq(VALID_ORG_NAME)
     end
 
   end
