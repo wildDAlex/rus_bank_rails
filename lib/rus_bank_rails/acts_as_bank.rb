@@ -204,15 +204,15 @@ module RusBankRails
       ##
       # Метод создает новый банк в базе
 
-      def new_bank_by_bic(bic)
-        if info = get_info_by_bic(bic)
-          bank = self.class.new(info)
-          bank.save
-          bank
-        else
-          nil
-        end
-      end
+      #def new_bank_by_bic(bic)
+      #  if info = get_info_by_bic(bic)
+      #    bank = self.class.new(info)
+      #    bank.save
+      #    bank
+      #  else
+      #    nil
+      #  end
+      #end
 
       ##
       # Метод создает новый банк в базе
