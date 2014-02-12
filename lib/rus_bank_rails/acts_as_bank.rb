@@ -20,7 +20,7 @@ module RusBankRails
       # Метод возвращает внутренний номер банка по БИК
 
       def BicToIntCode(bic)
-        resp = check_and_update_by_bic(bic)
+        resp = check_and_update(bic: bic)
         resp ? resp.internal_code : nil
       end
 
@@ -28,7 +28,7 @@ module RusBankRails
       # Метод возвращает регистрационный номер банка по БИК
 
       def BicToRegNumber(bic)
-        resp = check_and_update_by_bic(bic)
+        resp = check_and_update(bic: bic)
         resp ? resp.reg_number : nil
       end
 
@@ -41,13 +41,13 @@ module RusBankRails
             cbr = RusBank.new
             internal_code = cbr.RegNumToIntCode(reg_number)
             bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
-            check_and_update_by_bic(bic)
+            check_and_update(bic: bic)
             return internal_code.to_i
         }
         if bank.nil?
           get_int_code_by_reg_number.call
         else
-          resp = check_and_update_by_bic(bank.bic)
+          resp = check_and_update(bic: bank.bic)
           if resp.reg_number == reg_number.to_i   # на случай если после обновления записи в базе reg_number
             resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
           else
@@ -67,13 +67,13 @@ module RusBankRails
             if info.nil?
               return nil
             else
-              return check_and_update_by_bic(info[:co][:bic]).reg_number
+              return check_and_update(bic: info[:co][:bic]).reg_number
             end
         }
         if bank.nil?
           get_reg_number.call
         else
-          resp = check_and_update_by_bic(bank.bic)
+          resp = check_and_update(bic: bank.bic)
           if resp.internal_code == internal_code.to_i
             resp.reg_number
           else
@@ -88,10 +88,10 @@ module RusBankRails
       def SearchByName(bank_name)
         cbr = RusBank.new
         result = cbr.SearchByName(bank_name)
-        if(result)
+        if result
           banks = []
           result.each do |b|
-            bank = check_and_update_by_internal_code(b[:int_code])
+            bank = check_and_update(internal_code: b[:int_code])
             banks << bank unless bank.nil?
           end
           banks
@@ -172,26 +172,20 @@ module RusBankRails
       ##
       # Метод проверяет дату обновления записи в базе и пытается обновить в случае необходимости
 
-      def check_and_update_by_bic(bic)
-        bank = self.class.find_by_bic(bic)
-        if bank.nil?
-          new_bank_by_bic(bic)
+      def check_and_update(params = {})
+        if(params[:bic])
+          bank = self.class.find_by_bic(params[:bic])
+          info = get_info_by_bic(params[:bic])
+          internal_code = info[:internal_code] if info
+        elsif(params[:internal_code])
+          bank = self.class.find_by_internal_code(params[:internal_code])
+          internal_code = params[:internal_code]
         else
-          if bank.expire?
-            update_bank(bank)
-          else
-            bank
-          end
+          return nil
         end
-      end
 
-      ##
-      # Метод проверяет дату обновления записи в базе и пытается обновить в случае необходимости
-
-      def check_and_update_by_internal_code(internal_code)
-        bank = self.class.find_by_internal_code(internal_code)
         if bank.nil?
-          new_bank_by_internal_code(internal_code)
+          internal_code ? new_bank(internal_code) : nil
         else
           if bank.expire?
             update_bank(bank)
@@ -204,20 +198,7 @@ module RusBankRails
       ##
       # Метод создает новый банк в базе
 
-      #def new_bank_by_bic(bic)
-      #  if info = get_info_by_bic(bic)
-      #    bank = self.class.new(info)
-      #    bank.save
-      #    bank
-      #  else
-      #    nil
-      #  end
-      #end
-
-      ##
-      # Метод создает новый банк в базе
-
-      def new_bank_by_internal_code(internal_code)
+      def new_bank(internal_code)
         if info = get_info_by_internal_code(internal_code)
           bank = self.class.new(info)
           bank.save
@@ -286,11 +267,11 @@ module RusBankRails
         end
       end
 
-      def handle_exception(e)
-        puts "==========  ==========  =========="
-        puts e.inspect
-        puts "==========  ==========  =========="
-      end
+      #def handle_exception(e)
+      #  puts "==========  ==========  =========="
+      #  puts e.inspect
+      #  puts "==========  ==========  =========="
+      #end
 
     end
 
