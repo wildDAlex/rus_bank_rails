@@ -92,7 +92,7 @@ module RusBankRails
           banks = []
           result.each do |b|
             bank = check_and_update_by_internal_code(b[:int_code])
-            banks << bank #unless bank.nil?
+            banks << bank unless bank.nil?
           end
           banks
         else
