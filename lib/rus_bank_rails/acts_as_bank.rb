@@ -149,7 +149,7 @@ module RusBankRails
       end
 
       ##
-      # Возвращает true, если банк действующий
+      # Проверяет, действующий ли банк
 
       def is_active?
         (self.org_status != "лицензия отозвана") && (self.org_status != "ликвидирована") && !(self.get_licences_as_array_of_hashes.empty?)
@@ -245,12 +245,6 @@ module RusBankRails
           nil
         end
       end
-
-      #def handle_exception(e)
-      #  puts "==========  ==========  =========="
-      #  puts e.inspect
-      #  puts "==========  ==========  =========="
-      #end
 
     end
 
