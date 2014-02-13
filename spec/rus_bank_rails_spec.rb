@@ -223,7 +223,19 @@ describe Bank do
   end
 
   describe ".EnumBic" do
-    it 'waiting for tests'
+
+    # Ресурсоемкие тесты
+    #it 'should update bank in database if entry expires' do
+    #  old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Old name", updated_at: (Time.now - 1.month))
+    #  @bank.EnumBic
+    #  Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
+    #end
+
+    #it 'should return db-entry if entry not expire' do
+    #  FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
+    #  expect( @bank.EnumBic.collect{|b| b.org_name} ).to include("Bank in Database")
+    #end
+
   end
 
 end

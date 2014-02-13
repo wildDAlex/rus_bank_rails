@@ -83,8 +83,8 @@ module RusBankRails
       end
 
       ##
-      # Поиск по названию банка. Прокси метод, при каждом вызове обращается к внешнему API.
-      # При этом обновляет в базе каждый экземпляр результата.
+      # Поиск по названию банка. При этом, обращаясь к API, обновляет в базе каждый экземпляр результата.
+      # Чем большая выборка на выходе, тем более ресурсоемкий метод.
       # == Parameters:
       # bank_name::
       #   наименование банка
@@ -99,6 +99,7 @@ module RusBankRails
       ##
       # Список банков по коду региона.
       # При этом обновляет в базе каждый экземпляр результата.
+      # Ресурсоемкий метод, использовать с учетом этого.
       # == Parameters:
       # region_code::
       #   код региона
@@ -111,7 +112,7 @@ module RusBankRails
       end
 
       ##
-      # Возвращает список отделений по внутреннему номеру банка.
+      # Возвращает список филиалов по внутреннему номеру банка.
       # Метод делегирует вызов к соответствующему методу RusBank.
       # В базу не сохраняет, все результаты онлайн из API ЦБ.
       # == Parameters:
@@ -132,6 +133,7 @@ module RusBankRails
       # Список филиалов в указанном регионе.
       # Метод делегирует вызов к соответствующему методу RusBank.
       # В базу не сохраняет, все результаты онлайн из API ЦБ.
+      # Ресурсоемкий метод, использовать с учетом этого.
       # == Parameters:
       # region_code::
       #   код региона
@@ -147,11 +149,25 @@ module RusBankRails
       end
 
       ##
-      # Полный список банков. Прокси метод, при каждом вызове обращается к внешнему API.
+      # Данные по BIC кодам КО, без филиалов. При этом обновляет в базе каждый экземпляр результата.
+      # Ресурсоемкий метод, использовать с учетом этого.
+      # == Returns:
+      # Возвращает массив актуальных записей класса <Bank> из базы.
 
       def EnumBic
         cbr = RusBank.new
-        cbr.EnumBic
+        bics = cbr.EnumBic
+
+        if bics
+          banks = []
+          bics.each do |b|
+            bank = check_and_update(bic: b[:bic])
+            banks << bank unless bank.nil?
+          end
+          banks
+        else
+          nil
+        end
       end
 
       ##
@@ -211,8 +227,12 @@ module RusBankRails
       def check_and_update(params = {})
         if(params[:bic])
           bank = self.class.find_by_bic(params[:bic])
-          info = get_info_by_bic(params[:bic])
-          internal_code = info[:internal_code] if info
+          if bank
+            internal_code = bank.internal_code
+          else
+            info = get_info_by_bic(params[:bic])
+            internal_code = info[:internal_code] if info
+          end
         elsif(params[:internal_code])
           bank = self.class.find_by_internal_code(params[:internal_code])
           internal_code = params[:internal_code]
