@@ -16,6 +16,7 @@ module RusBankRails
     end
 
     module LocalInstanceMethods
+
       ##
       # Метод возвращает внутренний номер банка по БИК
 
@@ -230,15 +231,6 @@ module RusBankRails
           cbr = RusBank.new
           internal_code = cbr.BicToIntCode(bic)
           get_info_by_internal_code(internal_code) if internal_code
-      end
-
-      ##
-      # Метод возвращает актуальную информацию по банку с сайта ЦБР по регистрационному номеру
-
-      def get_info_by_reg_number(reg_number)
-        cbr = RusBank.new
-        internal_code = cbr.RegNumToIntCode(reg_number)
-        get_info_by_internal_code(internal_code) if internal_code
       end
 
       ##
