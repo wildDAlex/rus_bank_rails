@@ -37,6 +37,7 @@ module RusBankRails
       # Возвращает внутренний номер по регистрационному номеру
 
       def RegNumToIntCode(reg_number)
+        # TODO: Подумать, стоит ли учет смены регистрационного номера столь лишнего кода. Данный подход основывается на данных с API ЦБ, что более точно. Но можно все упростить, если допустить, что регистрационный код никогда не меняется.
         bank = self.class.find_by_reg_number(reg_number.to_i)
         get_int_code_by_reg_number = lambda {
             cbr = RusBank.new
@@ -61,25 +62,11 @@ module RusBankRails
       # Возвращает регистрационный номер по внутреннему номеру
 
       def IntCodeToRegNum(internal_code)
-        bank = self.class.find_by_internal_code(internal_code.to_i)
-        get_reg_number = lambda {
-            cbr = RusBank.new
-            info = cbr.CreditInfoByIntCode(internal_code)
-            if info.nil?
-              return nil
-            else
-              return check_and_update(bic: info[:co][:bic]).reg_number
-            end
-        }
-        if bank.nil?
-          get_reg_number.call
+        bank = check_and_update(internal_code: internal_code)
+        if bank
+          bank.reg_number
         else
-          resp = check_and_update(bic: bank.bic)
-          if resp.internal_code == internal_code.to_i
-            resp.reg_number
-          else
-            get_reg_number.call
-          end
+          nil
         end
       end
 
