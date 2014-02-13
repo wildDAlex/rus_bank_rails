@@ -75,17 +75,7 @@ module RusBankRails
 
       def SearchByName(bank_name)
         cbr = RusBank.new
-        result = cbr.SearchByName(bank_name)
-        if result
-          banks = []
-          result.each do |b|
-            bank = check_and_update(internal_code: b[:int_code])
-            banks << bank unless bank.nil?
-          end
-          banks
-        else
-          nil
-        end
+        get_updated_array( cbr.SearchByName(bank_name) )
       end
 
       ##
