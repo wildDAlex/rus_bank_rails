@@ -200,7 +200,14 @@ describe Bank do
   end
 
   describe ".SearchByRegionCode" do
-    it 'waiting for tests'
+
+    # "Тяжелый" метод, пришлось подбирать регион "попроще"
+    # 54 - Удмуртская Республика.
+
+    it 'should return correct value' do
+      expect( @bank.SearchByRegionCode(54).collect{|b| b.org_name} ).to include("УДМУРТПРОМСТРОЙБАНК")
+    end
+
   end
 
   describe ".GetOffices" do

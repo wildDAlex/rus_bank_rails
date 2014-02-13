@@ -93,7 +93,7 @@ module RusBankRails
 
       def SearchByRegionCode(region_code)
         cbr = RusBank.new
-        cbr.SearchByRegionCode(region_code)
+        get_updated_array( cbr.SearchByRegionCode(region_code) )
       end
 
       ##
@@ -208,6 +208,22 @@ module RusBankRails
         else
           bank.update(info.merge(updated_at: Time.now))
           bank
+        end
+      end
+
+      ##
+      # Получает массив хэшей банков и возвращает массив соответствующих записей в базе данных
+
+      def get_updated_array(array_of_banks)
+        if array_of_banks
+          banks = []
+          array_of_banks.each do |b|
+            bank = check_and_update(internal_code: b[:int_code])
+            banks << bank unless bank.nil?
+          end
+          banks
+        else
+          nil
         end
       end
 
