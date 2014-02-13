@@ -10,12 +10,10 @@ module RusBankRails
     end
 
     module ClassMethods
+
       def acts_as_bank
         include RusBankRails::ActsAsBank::LocalInstanceMethods
       end
-    end
-
-    module LocalInstanceMethods
 
       ##
       # Метод возвращает внутренний номер банка по БИК
@@ -47,13 +45,13 @@ module RusBankRails
 
       def RegNumToIntCode(reg_number)
         # TODO: Подумать, стоит ли учет смены регистрационного номера столь лишнего кода. Данный подход основывается на данных с API ЦБ, что более точно. Но можно все упростить, если допустить, что регистрационный код никогда не меняется.
-        bank = self.class.find_by_reg_number(reg_number.to_i)
+        bank = self.find_by_reg_number(reg_number.to_i)
         get_int_code_by_reg_number = lambda {
-            cbr = RusBank.new
-            internal_code = cbr.RegNumToIntCode(reg_number)
-            bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
-            check_and_update(bic: bic)
-            return internal_code.to_i
+          cbr = RusBank.new
+          internal_code = cbr.RegNumToIntCode(reg_number)
+          bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
+          check_and_update(bic: bic)
+          return internal_code.to_i
         }
         if bank.nil?
           get_int_code_by_reg_number.call
@@ -182,36 +180,6 @@ module RusBankRails
         cbr.RegionsEnum
       end
 
-      ##
-      # Проверяет, необходимо ли обновлять информацию по банку
-
-      def expire?
-        time = Time.now.in_time_zone("Moscow")
-        updated_at = self.updated_at.in_time_zone("Moscow")
-        not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
-      end
-
-      ##
-      # Возвращает десериализованный массив хешей лицензий банка, представленного объектом
-      # == Returns:
-      # Возвращает массив хэшей вида {:l_code=>"код статуса лицензии",
-      # :lt=>"статус лицензии", :l_date=>Дата}
-
-      def get_licences_as_array_of_hashes
-        lics = []
-        self.licences.each do |lic|
-          lics << {l_code: lic[:l_code], lt: lic[:lt].force_encoding("UTF-8"), l_date: lic[:l_date]}
-        end
-        lics
-      end
-
-      ##
-      # Проверяет, действующий ли банк
-
-      def is_active?
-        (self.org_status != "лицензия отозвана") && (self.org_status != "ликвидирована") && !(self.get_licences_as_array_of_hashes.empty?)
-      end
-
       private
 
       ##
@@ -226,7 +194,7 @@ module RusBankRails
 
       def check_and_update(params = {})
         if(params[:bic])
-          bank = self.class.find_by_bic(params[:bic])
+          bank = self.find_by_bic(params[:bic])
           if bank
             internal_code = bank.internal_code
           else
@@ -234,7 +202,7 @@ module RusBankRails
             internal_code = info[:internal_code] if info
           end
         elsif(params[:internal_code])
-          bank = self.class.find_by_internal_code(params[:internal_code])
+          bank = self.find_by_internal_code(params[:internal_code])
           internal_code = params[:internal_code]
         else
           return nil
@@ -261,14 +229,13 @@ module RusBankRails
 
       def new_bank(internal_code)
         if info = get_info_by_internal_code(internal_code)
-          bank = self.class.new(info)
+          bank = self.new(info)
           bank.save
           bank
         else
           nil
         end
       end
-
 
       ##
       # Обновляет переданный экземпляр банка в базе.
@@ -310,9 +277,9 @@ module RusBankRails
       # Метод возвращает актуальную информацию по банку с сайта ЦБР по БИК банка
 
       def get_info_by_bic(bic)
-          cbr = RusBank.new
-          internal_code = cbr.BicToIntCode(bic)
-          get_info_by_internal_code(internal_code) if internal_code
+        cbr = RusBank.new
+        internal_code = cbr.BicToIntCode(bic)
+        get_info_by_internal_code(internal_code) if internal_code
       end
 
       ##
@@ -339,6 +306,40 @@ module RusBankRails
         else
           nil
         end
+      end
+
+    end
+
+    module LocalInstanceMethods
+
+      ##
+      # Проверяет, необходимо ли обновлять информацию по банку
+
+      def expire?
+        time = Time.now.in_time_zone("Moscow")
+        updated_at = self.updated_at.in_time_zone("Moscow")
+        not( (updated_at.day == time.day) && (updated_at.month == time.month) && (updated_at.year == time.year) )
+      end
+
+      ##
+      # Возвращает десериализованный массив хешей лицензий банка, представленного объектом
+      # == Returns:
+      # Возвращает массив хэшей вида {:l_code=>"код статуса лицензии",
+      # :lt=>"статус лицензии", :l_date=>Дата}
+
+      def get_licences_as_array_of_hashes
+        lics = []
+        self.licences.each do |lic|
+          lics << {l_code: lic[:l_code], lt: lic[:lt].force_encoding("UTF-8"), l_date: lic[:l_date]}
+        end
+        lics
+      end
+
+      ##
+      # Проверяет, действующий ли банк
+
+      def is_active?
+        (self.org_status != "лицензия отозвана") && (self.org_status != "ликвидирована") && !(self.get_licences_as_array_of_hashes.empty?)
       end
 
     end
