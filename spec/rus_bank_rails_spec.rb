@@ -211,18 +211,18 @@ describe Bank do
   end
 
   describe ".GetOffices" do
-    it 'waiting for tests'
+    # Нет необходимости тестировать данный метод, т.к. вызов делегируется к RusBank
   end
 
   describe ".GetOfficesByRegion" do
-    it 'waiting for tests'
-  end
-
-  describe ".EnumBic" do
-    it 'waiting for tests'
+    # Нет необходимости тестировать данный метод, т.к. вызов делегируется к RusBank
   end
 
   describe ".RegionsEnum" do
+    # Нет необходимости тестировать данный метод, т.к. вызов делегируется к RusBank
+  end
+
+  describe ".EnumBic" do
     it 'waiting for tests'
   end
 
