@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 FactoryGirl.define do
   factory :valid_bank, :class => Bank do |f|
     f.reg_number 316
