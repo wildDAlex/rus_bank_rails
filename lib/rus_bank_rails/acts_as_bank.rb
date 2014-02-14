@@ -73,11 +73,7 @@ module RusBankRails
 
       def IntCodeToRegNum(internal_code)
         bank = check_and_update(internal_code: internal_code)
-        if bank
-          bank.reg_number
-        else
-          nil
-        end
+        bank.reg_number if bank
       end
 
       ##
@@ -232,8 +228,6 @@ module RusBankRails
           bank = self.new(info)
           bank.save
           bank
-        else
-          nil
         end
       end
 
@@ -268,8 +262,6 @@ module RusBankRails
             banks << bank unless bank.nil?
           end
           banks
-        else
-          nil
         end
       end
 
