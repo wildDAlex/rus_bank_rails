@@ -21,7 +21,7 @@ module RusBankRails
       # bic::
       #   Банковский Идентификационный Код
 
-      def BicToIntCode(bic)
+      def bic_to_int_code(bic)
         resp = check_and_update(bic: bic)
         resp ? resp.internal_code : nil
       end
@@ -32,7 +32,7 @@ module RusBankRails
       # bic::
       #   Банковский Идентификационный Код
 
-      def BicToRegNumber(bic)
+      def bic_to_reg_number(bic)
         resp = check_and_update(bic: bic)
         resp ? resp.reg_number : nil
       end
@@ -43,7 +43,7 @@ module RusBankRails
       # reg_number::
       #   Регистрационный номер банка
 
-      def RegNumToIntCode(reg_number)
+      def reg_num_to_int_code(reg_number)
         # TODO: Подумать, стоит ли учет смены регистрационного номера столь лишнего кода. Данный подход основывается на данных с API ЦБ, что более точно. Но можно все упростить, если допустить, что регистрационный код никогда не меняется.
         bank = self.find_by_reg_number(reg_number.to_i)
         get_int_code_by_reg_number = lambda {
@@ -71,7 +71,7 @@ module RusBankRails
       # internal_code::
       #   Внутренний номер банка
 
-      def IntCodeToRegNum(internal_code)
+      def int_code_to_reg_number(internal_code)
         bank = check_and_update(internal_code: internal_code)
         bank.reg_number if bank
       end
@@ -85,7 +85,7 @@ module RusBankRails
       # == Returns:
       # Возвращает массив актуальных записей класса <Bank> из базы.
 
-      def SearchByName(bank_name)
+      def search_by_name(bank_name)
         cbr = RusBank.new
         get_updated_array( cbr.SearchByName(bank_name) )
       end
@@ -100,7 +100,7 @@ module RusBankRails
       # == Returns:
       # Возвращает массив актуальных записей класса <Bank> из базы.
 
-      def SearchByRegionCode(region_code)
+      def search_by_region_code(region_code)
         cbr = RusBank.new
         get_updated_array( cbr.SearchByRegionCode(region_code) )
       end
@@ -118,7 +118,7 @@ module RusBankRails
       # :cndate=>"Дата регистрации филиала", :straddrmn=>"Место нахождения (фактический адрес)",
       # :reg_id=>"вн. Код региона"}
 
-      def GetOffices(internal_code)
+      def get_offices(internal_code)
         cbr = RusBank.new
         cbr.GetOffices(internal_code)
       end
@@ -137,7 +137,7 @@ module RusBankRails
       # :cname=>"название филиала", :cndate=>"Дата регистрации филиала",
       # :straddrmn=>"Место нахождения (фактический адрес)"}
 
-      def GetOfficesByRegion(region_code)
+      def get_offices_by_region(region_code)
         cbr = RusBank.new
         cbr.GetOfficesByRegion(region_code)
       end
@@ -148,7 +148,7 @@ module RusBankRails
       # == Returns:
       # Возвращает массив актуальных записей класса <Bank> из базы.
 
-      def EnumBic
+      def enum_bic
         cbr = RusBank.new
         bics = cbr.EnumBic
 
@@ -171,7 +171,7 @@ module RusBankRails
       # == Returns:
       # Возвращает массив хэшей вида {:reg_code=>"Внутренний код региона", :cname=>"Название региона"}
 
-      def RegionsEnum
+      def regions_enum
         cbr = RusBank.new
         cbr.RegionsEnum
       end
