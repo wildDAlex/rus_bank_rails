@@ -13,7 +13,7 @@ class CreateMigration < ActiveRecord::Migration
       t.string   "ustav_adr"
       t.string   "fact_adr"
       t.string   "director"
-      t.integer  "ust_money"
+      t.string  "ust_money"
       t.string   "org_status"
       t.integer  "reg_code"
       t.date     "ssv_date"

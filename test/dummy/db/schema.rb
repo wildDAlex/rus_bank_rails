@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140208123404) do
+ActiveRecord::Schema.define(version: 20140310145403) do
 
   create_table "banks", force: true do |t|
     t.datetime "created_at"
@@ -28,11 +28,11 @@ ActiveRecord::Schema.define(version: 20140208123404) do
     t.string   "ustav_adr"
     t.string   "fact_adr"
     t.string   "director"
-    t.integer  "ust_money"
     t.string   "org_status"
     t.integer  "reg_code"
     t.date     "ssv_date"
     t.text     "licences"
+    t.string   "ust_money"
   end
 
 end
