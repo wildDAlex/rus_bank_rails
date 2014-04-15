@@ -201,6 +201,33 @@ module RusBankRails
         internal_code ? check_and_update(internal_code: internal_code) : nil
       end
 
+      ##
+      # Метод возвращает банк по основному государственному регистрационному номеру(ОГРН)
+      # == Parameters:
+      # main_reg_number::
+      #   Основной государственный регистрационный номер
+      # == Returns:
+      # Возвращает экземпляр класса <Bank> из базы или nil.
+
+      def search_by_main_reg_number(main_reg_number)
+        bank = Bank.find_by_main_reg_number(main_reg_number)
+        if bank
+          check_and_update(internal_code: bank.internal_code )
+        else                      # Единственный метод в API, из которого можно вытянуть банк по ОГРН
+          cbr = RusBank.new       # является enum_bic, но локальный вариант метода обновляет ВСЕ полученные банки
+          all_banks = cbr.EnumBic # в базе, что лишнее для данного случая. Поэтому используем enum_bic из rus_bank.
+
+          if all_banks
+            all_banks.each do |b|
+              if b[:rb] == main_reg_number
+                return check_and_update(bic: b[:bic] )
+              end
+            end
+            return nil
+          end
+        end
+      end
+
       private
 
       ##
