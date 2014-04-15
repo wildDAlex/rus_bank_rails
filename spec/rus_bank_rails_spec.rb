@@ -191,6 +191,10 @@ describe Bank do
       Bank.search_by_name(INVALID_ORG_NAME).should be_nil
     end
 
+    it 'should return bank if bank with no bic' do
+      Bank.search_by_name('МОСБИЗНЕСБАНК').first.org_status.should eq "ликвидирована"
+    end
+
     it 'should return db-entry if entry not expire' do
       FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
       expect( Bank.search_by_name(VALID_ORG_NAME).first.org_name ).to eq("Bank in Database")
@@ -248,6 +252,10 @@ describe Bank do
 
     it 'should return nil if bank not found' do
       expect( Bank.search_by_reg_number(INVALID_REG_NUMBER)).to be_nil
+    end
+
+    it 'should return bank if bank with no bic' do
+      Bank.search_by_reg_number('999').org_status.should eq "ликвидирована"
     end
 
     it 'should update bank in database if entry expires' do

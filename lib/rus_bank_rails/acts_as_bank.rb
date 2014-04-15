@@ -60,11 +60,15 @@ module RusBankRails
         if bank.nil?
           get_int_code_by_reg_number.call
         else
-          resp = check_and_update(bic: bank.bic)
-          if resp.reg_number == reg_number.to_i   # на случай если после обновления записи в базе reg_number
-            resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
-          else
-            get_int_code_by_reg_number.call
+          if bank.bic                               # Банк в базе может быть без БИК
+            resp = check_and_update(bic: bank.bic)
+            if resp.reg_number == reg_number.to_i   # На случай если после обновления записи в базе reg_number
+              resp.internal_code                    # поменялся и найденный банк из базы становится неактуальным
+            else
+              get_int_code_by_reg_number.call
+            end
+          else                                      # Если без БИК, обновлять не требуется, банк не действующий.
+            bank.internal_code
           end
         end
       end
@@ -201,7 +205,7 @@ module RusBankRails
       # Возвращает экземпляр класса <Bank> из базы или nil.
 
       def search_by_reg_number(reg_number)
-        internal_code = reg_num_to_int_code(reg_number)
+        internal_code = reg_num_to_int_code(reg_number.to_i)
         internal_code ? check_and_update(internal_code: internal_code) : nil
       end
 
@@ -214,7 +218,7 @@ module RusBankRails
       # Возвращает экземпляр класса <Bank> из базы или nil.
 
       def search_by_main_reg_number(main_reg_number)
-        bank = Bank.find_by_main_reg_number(main_reg_number)
+        bank = Bank.where(main_reg_number: main_reg_number.to_s).first
         if bank
           check_and_update(internal_code: bank.internal_code )
         else                      # Единственный метод в API, из которого можно вытянуть банк по ОГРН
