@@ -211,6 +211,25 @@ describe Bank do
 
   end
 
+  describe ".search_by_bic" do
+
+    it 'should return correct value' do
+      expect( Bank.search_by_bic(VALID_BIC).org_name ).to eq(VALID_ORG_NAME)
+    end
+
+    it 'should return db-entry if entry not expire' do
+      FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
+      Bank.search_by_bic(VALID_BIC).org_name.should eq "Bank in Database"
+    end
+
+    it 'should update bank in database if entry expires' do
+      old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Old name", updated_at: (Time.now - 1.month))
+      Bank.search_by_bic(old_db_entry.bic)
+      Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
+    end
+
+  end
+
   describe ".get_offices" do
     # Нет необходимости тестировать данный метод, т.к. вызов делегируется к RusBank
   end

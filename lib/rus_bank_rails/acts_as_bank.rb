@@ -176,6 +176,18 @@ module RusBankRails
         cbr.RegionsEnum
       end
 
+      ##
+      # Метод возвращает банк по БИК
+      # == Parameters:
+      # bic::
+      #   Банковский Идентификационный Код
+      # == Returns:
+      # Возвращает экземпляр класса <Bank> из базы или nil.
+
+      def search_by_bic(bic)
+        check_and_update(bic: bic)
+      end
+
       private
 
       ##
