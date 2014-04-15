@@ -13,6 +13,7 @@ VALID_REGION = FactoryGirl.attributes_for(:valid_bank)[:reg_code]
 INVALID_REGION = '999'
 INVALID_ORG_NAME = 'djhgsjdlksl'
 VALID_ORG_NAME = FactoryGirl.attributes_for(:valid_bank)[:org_name]
+#VALID_MAIN_REG_NUMBER = FactoryGirl.attributes_for(:valid_bank)[:main_reg_number]
 
 describe Bank do
 
@@ -224,8 +225,25 @@ describe Bank do
 
     it 'should update bank in database if entry expires' do
       old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Old name", updated_at: (Time.now - 1.month))
-      Bank.search_by_bic(old_db_entry.bic)
-      Bank.find_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
+      Bank.search_by_bic(old_db_entry.bic).org_name.should eq VALID_ORG_NAME
+    end
+
+  end
+
+  describe ".search_by_reg_number" do
+
+    it 'should return correct value' do
+      expect( Bank.search_by_reg_number(VALID_REG_NUMBER).org_name ).to eq(VALID_ORG_NAME)
+    end
+
+    it 'should return db-entry if entry not expire' do
+      FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
+      Bank.search_by_reg_number(VALID_REG_NUMBER).org_name.should eq "Bank in Database"
+    end
+
+    it 'should update bank in database if entry expires' do
+      old_db_entry = FactoryGirl.create(:valid_bank, org_name: "Old name", updated_at: (Time.now - 1.month))
+      Bank.search_by_reg_number(old_db_entry.reg_number).org_name.should eq VALID_ORG_NAME
     end
 
   end

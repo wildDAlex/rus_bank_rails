@@ -9,7 +9,7 @@ FactoryGirl.define do
     f.org_full_name nil
     f.phones nil
     f.date_kgr_registration nil
-    f.main_reg_number nil
+    f.main_reg_number '1027700280937'
     f.main_date_reg nil
     f.ustav_adr nil
     f.fact_adr nil

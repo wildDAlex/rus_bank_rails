@@ -188,6 +188,19 @@ module RusBankRails
         check_and_update(bic: bic)
       end
 
+      ##
+      # Метод возвращает банк по регистрационному номеру ЦБ РФ
+      # == Parameters:
+      # reg_number::
+      #   Регистрационный номер банка
+      # == Returns:
+      # Возвращает экземпляр класса <Bank> из базы или nil.
+
+      def search_by_reg_number(reg_number)
+        internal_code = reg_num_to_int_code(reg_number)
+        internal_code ? check_and_update(internal_code: internal_code) : nil
+      end
+
       private
 
       ##
