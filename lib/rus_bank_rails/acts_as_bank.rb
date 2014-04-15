@@ -49,9 +49,13 @@ module RusBankRails
         get_int_code_by_reg_number = lambda {
           cbr = RusBank.new
           internal_code = cbr.RegNumToIntCode(reg_number)
-          bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
-          check_and_update(bic: bic)
-          return internal_code.to_i
+          if internal_code
+            bic = cbr.CreditInfoByIntCode(internal_code)[:co][:bic]
+            check_and_update(bic: bic)
+            return internal_code.to_i
+          else
+            return nil
+          end
         }
         if bank.nil?
           get_int_code_by_reg_number.call

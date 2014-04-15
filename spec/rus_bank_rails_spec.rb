@@ -81,8 +81,8 @@ describe Bank do
     end
 
     it 'should return nil if value incorrect' do
-      #Bank.reg_num_to_int_code(INVALID_REG_NUMBER).should be_nil
-      expect{ Bank.reg_num_to_int_code(INVALID_REG_NUMBER) }.to raise_error Savon::SOAPFault
+      Bank.reg_num_to_int_code(INVALID_REG_NUMBER).should be_nil
+      #expect{ Bank.reg_num_to_int_code(INVALID_REG_NUMBER) }.to raise_error Savon::SOAPFault
     end
 
     it 'saves new bank to database' do
@@ -219,6 +219,10 @@ describe Bank do
       expect( Bank.search_by_bic(VALID_BIC).org_name ).to eq(VALID_ORG_NAME)
     end
 
+    it 'should return nil if bank not found' do
+      expect( Bank.search_by_bic(INVALID_MAIN_REG_NUMBER)).to be_nil
+    end
+
     it 'should return db-entry if entry not expire' do
       FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
       Bank.search_by_bic(VALID_BIC).org_name.should eq "Bank in Database"
@@ -240,6 +244,10 @@ describe Bank do
     it 'should return db-entry if entry not expire' do
       FactoryGirl.create(:valid_bank, org_name: "Bank in Database")
       Bank.search_by_reg_number(VALID_REG_NUMBER).org_name.should eq "Bank in Database"
+    end
+
+    it 'should return nil if bank not found' do
+      expect( Bank.search_by_reg_number(INVALID_REG_NUMBER)).to be_nil
     end
 
     it 'should update bank in database if entry expires' do
