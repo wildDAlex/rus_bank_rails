@@ -192,7 +192,7 @@ describe Bank do
     end
 
     it 'should return bank if bank with no bic' do
-      Bank.search_by_name('МОСБИЗНЕСБАНК').first.org_status.should eq "ликвидирована"
+      Bank.search_by_name('МОСБИЗНЕСБАНК').first.org_status.should eq "ликвидирована"     # TODO
     end
 
     it 'should return db-entry if entry not expire' do
@@ -255,7 +255,7 @@ describe Bank do
     end
 
     it 'should return bank if bank with no bic' do
-      Bank.search_by_reg_number('999').org_status.should eq "ликвидирована"
+      Bank.search_by_reg_number('999').org_status.should eq "ликвидирована"     # TODO
     end
 
     it 'should update bank in database if entry expires' do

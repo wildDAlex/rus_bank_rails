@@ -1,4 +1,4 @@
-class CreateMigration < ActiveRecord::Migration
+class CreateBanks < ActiveRecord::Migration
   def change
     create_table table_name, force: true do |t|
       t.integer  "reg_number"
@@ -13,12 +13,15 @@ class CreateMigration < ActiveRecord::Migration
       t.string   "ustav_adr"
       t.string   "fact_adr"
       t.string   "director"
-      t.string  "ust_money"
+      t.string   "ust_money"
       t.string   "org_status"
       t.integer  "reg_code"
       t.date     "ssv_date"
       t.text     "licences"
       t.timestamps
     end
+    add_index table_name, :reg_code
+    add_index table_name, :internal_code
+    add_index table_name, :bic
   end
 end
