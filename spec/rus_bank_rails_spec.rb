@@ -316,3 +316,33 @@ describe Bank do
   end
 
 end
+
+describe BankRegion do
+
+  before :each do
+    DatabaseCleaner.clean
+  end
+
+  describe '.update_regions' do
+
+    it 'saves new regions to database' do
+      expect{
+        BankRegion.update_regions
+      }.to change{BankRegion.all.count}
+    end
+
+    it 'should not dublicate db-entry if region already exist' do
+      FactoryGirl.create(:valid_region, cname: 'Регион')
+      BankRegion.update_regions
+      BankRegion.where(reg_code: FactoryGirl.attributes_for(:valid_region)[:reg_code]).length.should eq 1
+    end
+
+    it 'updates db-entry' do
+      FactoryGirl.create(:valid_region, cname: 'Регион')
+      BankRegion.update_regions
+      BankRegion.where(reg_code: FactoryGirl.attributes_for(:valid_region)[:reg_code]).first.cname.should eq 'Москва'
+    end
+
+  end
+
+end

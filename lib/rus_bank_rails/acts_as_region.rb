@@ -11,10 +11,6 @@ module RusBankRails
 
     module ClassMethods
 
-      # def acts_as_region
-      #   include RusBankRails::ActsAsRegion::LocalInstanceMethods
-      # end
-
       ##
       # Список регионов.
       # Метод делегирует вызов к соответствующему методу RusBank.
@@ -29,8 +25,7 @@ module RusBankRails
 
       ##
       # Обновляет список регионов в базе.
-      # == Returns:
-      # true/false как результат обновления.
+
       def update_regions
         regions = regions_enum
         regions.each do |region|
@@ -42,9 +37,6 @@ module RusBankRails
             new_region.save
           end
         end
-      #   return true
-      # rescue
-      #   return false
       end
 
     end

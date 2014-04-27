@@ -96,11 +96,6 @@ module RusBankRails
       def search_by_name(bank_name)
         cbr = RusBank.new
         get_updated_array( cbr.SearchByName(bank_name) )
-        # API ЦБ ищет только по сокращенному наименованию, поэтому отдельно ищем в базе
-        # search = ['%','%'].join(bank_name)
-        # escaped_query = bank_name.gsub('%', '\%').gsub('_', '\_')
-        # get_updated_array( Bank.where("org_full_name LIKE :name OR org_name LIKE :name", {:name => "%#{bank_name}%"}) )
-        # Bank.where("org_full_name LIKE ? OR org_name LIKE ?", "%#{bank_name}%", "%#{bank_name}%")
       end
 
       ##

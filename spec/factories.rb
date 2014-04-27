@@ -20,4 +20,9 @@ FactoryGirl.define do
     f.ssv_date nil
     f.licences nil
   end
+
+  factory :valid_region, :class => BankRegion do |f|
+    f.reg_code 16
+    f.cname 'Москва'
+  end
 end
