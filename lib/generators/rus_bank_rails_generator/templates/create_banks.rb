@@ -21,7 +21,7 @@ class CreateBanks < ActiveRecord::Migration
       t.timestamps
     end
     add_index table_name, :reg_code
-    add_index table_name, :internal_code
-    add_index table_name, :bic
+    add_index table_name, :internal_code, name: "index_banks_on_internal_code", unique: true
+    add_index table_name, :bic, name: "index_banks_on_bic"
   end
 end
