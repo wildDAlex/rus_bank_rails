@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rus_bank_rails (1.5.2)
+    rus_bank_rails (1.5.3)
       rails (>= 3.2.0)
       rus_bank
       savon (~> 2.3.3)
